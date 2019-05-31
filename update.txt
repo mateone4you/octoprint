@@ -24,6 +24,9 @@ sudo chmod +x /etc/init.d/octoprint
 
 sudo update-rc.d octoprint defaults
 
+sudo service octoprint {start|stop|restart}
+sudo service klipper {start|stop|restart|status}
+
 Support restart/shutdown through OctoPrint's system menu
 In Settings > Commands, configure the following commands:
 
