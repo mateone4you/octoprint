@@ -1,0 +1,35 @@
+git clone https://github.com/KevinOConnor/klipper
+./klipper/scripts/install-octopi.sh
+cd ~/klipper
+make menuconfig
+make
+sudo service klipper stop
+make flash FLASH_DEVICE=/dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0
+sudo service klipper start
+
+sudo apt update
+sudo apt install python-pip python-dev python-setuptools python-virtualenv git libyaml-dev build-essential
+mkdir OctoPrint && cd OctoPrint
+virtualenv venv
+source venv/bin/activate
+pip install pip --upgrade
+pip install https://get.octoprint.org/latest
+
+sudo usermod -a -G tty pi
+sudo usermod -a -G dialout pi
+
+wget https://github.com/foosel/OctoPrint/raw/master/scripts/octoprint.init && sudo mv octoprint.init /etc/init.d/octoprint
+wget https://github.com/foosel/OctoPrint/raw/master/scripts/octoprint.default && sudo mv octoprint.default /etc/default/octoprint
+sudo chmod +x /etc/init.d/octoprint
+
+sudo update-rc.d octoprint defaults
+
+Support restart/shutdown through OctoPrint's system menu
+In Settings > Commands, configure the following commands:
+
+Restart OctoPrint: sudo service octoprint restart
+Restart system: sudo shutdown -r now
+Shutdown system: sudo shutdown -h now
+
+You'll have to add a sudo rule by creating a file /etc/sudoers.d/octoprint-shutdown (as root) with the following contents:
+pi ALL=NOPASSWD: /sbin/shutdown
